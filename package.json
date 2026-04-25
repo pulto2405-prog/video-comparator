@@ -1,24 +1,17 @@
 {
   "name": "video-comparator",
-  "version": "1.1.0",
-  "description": "Professional side-by-side video comparison tool with synchronized playback and frame-accurate seeking.",
+  "version": "1.1.1",
+  "description": "Professional side-by-side video comparison tool.",
   "main": "main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "electron .",
+    "start": "npm run build && electron .",
     "build:linux": "npm run build && electron-builder --linux --x64",
     "build:arm64": "npm run build && electron-builder --linux --arm64",
     "build:win": "npm run build && electron-builder --win"
   },
-  "keywords": [
-    "video",
-    "comparison",
-    "side-by-side",
-    "electron",
-    "react"
-  ],
   "author": "Pulto",
   "license": "MIT",
   "devDependencies": {

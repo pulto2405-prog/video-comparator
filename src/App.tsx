@@ -8,7 +8,6 @@ export default function App() {
   const [duration, setDuration] = useState(0);
   const [volume1, setVolume1] = useState(1);
   const [volume2, setVolume2] = useState(1);
-  const [currentTime, setCurrentTime] = useState(0);
   
   const videoRef1 = useRef<HTMLVideoElement>(null);
   const videoRef2 = useRef<HTMLVideoElement>(null);
@@ -36,7 +35,6 @@ export default function App() {
     const time = parseFloat(e.target.value);
     if (videoRef1.current) videoRef1.current.currentTime = time;
     if (videoRef2.current) videoRef2.current.currentTime = time;
-    setCurrentTime(time);
   };
 
   const handlePlaybackRateChange = (rate: number) => {
@@ -60,20 +58,9 @@ export default function App() {
     const v1 = videoRef1.current;
     if (!v1) return;
 
-    const updateMetadata = () => {
-      setDuration(v1.duration);
-    };
-    const updateTime = () => {
-      setCurrentTime(v1.currentTime);
-    };
-
-    v1.addEventListener('loadedmetadata', updateMetadata);
-    v1.addEventListener('timeupdate', updateTime);
-    
-    return () => {
-      v1.removeEventListener('loadedmetadata', updateMetadata);
-      v1.removeEventListener('timeupdate', updateTime);
-    };
+    const updateDuration = () => setDuration(v1.duration);
+    v1.addEventListener('loadedmetadata', updateDuration);
+    return () => v1.removeEventListener('loadedmetadata', updateDuration);
   }, [video1]);
 
   useEffect(() => {
@@ -115,15 +102,13 @@ export default function App() {
       <div className="player-grid">
         <div className="video-wrapper">
           <h3>Video 1</h3>
-          <div className="video-content">
-            {video1 ? (
-              <video ref={videoRef1} src={video1} />
-            ) : (
-              <div className="placeholder">Bitte Video 1 wählen</div>
-            )}
-          </div>
+          {video1 ? (
+            <video ref={videoRef1} src={video1} style={{width: '100%'}} />
+          ) : (
+            <div className="placeholder">Bitte Video 1 wählen</div>
+          )}
           <div className="volume-control">
-            <span>🔈</span>
+            <label>🔈 </label>
             <input 
               type="range" min="0" max="1" step="0.01" 
               value={volume1} 
@@ -132,18 +117,15 @@ export default function App() {
             <span>{Math.round(volume1 * 100)}%</span>
           </div>
         </div>
-
         <div className="video-wrapper">
           <h3>Video 2</h3>
-          <div className="video-content">
-            {video2 ? (
-              <video ref={videoRef2} src={video2} />
-            ) : (
-              <div className="placeholder">Bitte Video 2 wählen</div>
-            )}
-          </div>
+          {video2 ? (
+            <video ref={videoRef2} src={video2} style={{width: '100%'}} />
+          ) : (
+            <div className="placeholder">Bitte Video 2 wählen</div>
+          )}
           <div className="volume-control">
-            <span>🔈</span>
+            <label>🔈 </label>
             <input 
               type="range" min="0" max="1" step="0.01" 
               value={volume2} 
@@ -177,14 +159,13 @@ export default function App() {
             min="0" 
             max={duration || 100} 
             step="0.01"
-            value={currentTime}
             onChange={syncSeek} 
           />
         </div>
       </div>
 
       <div className="hints">
-        <p>Video 1 steuert die Wiedergabe für beide Fenster synchron.</p>
+        <p>Hinweis: Video 1 steuert die Wiedergabe für beide Fenster.</p>
       </div>
     </div>
   );

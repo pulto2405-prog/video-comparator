@@ -15,17 +15,10 @@ function createWindow() {
     autoHideMenuBar: false
   });
 
-  const isDev = !app.isPackaged;
-  
-  if (isDev) {
-    // Falls wir im Dev-Modus sind, laden wir vom Vite-Server
-    mainWindow.loadURL('http://localhost:5173');
-  } else {
-    // In der Standalone-Version laden wir die gebaute index.html
-    mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
-  }
+  // Wir laden immer die gebaute Datei, um "weiße Fenster" zu vermeiden
+  const indexPath = path.join(__dirname, 'dist', 'index.html');
+  mainWindow.loadFile(indexPath);
 
-  // Rechtsklick-Menü
   mainWindow.webContents.on('context-menu', (e, props) => {
     const menu = Menu.buildFromTemplate([
       { role: 'copy', label: 'Kopieren' },
